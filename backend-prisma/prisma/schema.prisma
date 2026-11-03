@@ -1,0 +1,48 @@
+// =====================================================================
+//  schema.prisma — "พิมพ์เขียว" ของฐานข้อมูล (แหล่งความจริงเดียว)
+//  ทำอะไร : กำหนดว่ามีตารางอะไร คอลัมน์อะไร ความสัมพันธ์ยังไง
+//  ใช้ยังไง: แก้ไฟล์นี้ -> รัน  npx prisma db push
+//            Prisma จะสร้าง/แก้ตาราง SQLite และสร้าง client ให้เรียกใน JS
+//  ในห้องสอบ: เปลี่ยนชื่อ model/field ให้ตรงโจทย์ที่ที่นี่ที่เดียว
+//            แล้วค่อยไปแก้ validate + toData ใน server.js ตามให้ตรงกัน
+// =====================================================================
+
+// ----- 1) บอกว่าใช้ฐานข้อมูลอะไร อยู่ที่ไหน -----
+datasource db {
+  provider = "sqlite"            // ชนิด DB (ถ้าเปลี่ยนเป็น mysql/postgresql แก้ตรงนี้)
+  url      = env("DATABASE_URL") // อ่านค่าจากไฟล์ .env  (file:./dev.db)
+}
+
+// ----- 2) บอกให้สร้าง Prisma Client (ตัวที่เราเรียก prisma.book.findMany()) -----
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ----- 3) ตารางแม่ (ฝั่ง "1") : หมวดหมู่ -----
+model Catalog {
+  id          Int     @id @default(autoincrement()) // คีย์หลัก รันเลขอัตโนมัติ
+  name        String  @unique                       // @unique = ชื่อห้ามซ้ำ (ซ้ำจะเกิด error รหัส P2002)
+  description String  @default("")                  // @default = ไม่ส่งมาก็ใช้ค่านี้
+  books       Book[]  // ฝั่ง "1" ถือรายการลูกทั้งหมด (ไม่ใช่คอลัมน์จริงใน DB แค่ไว้ให้ include ได้)
+}
+
+// ----- 4) ตารางลูก (ฝั่ง "N") : หนังสือ -----
+model Book {
+  id          Int      @id @default(autoincrement())
+  title       String
+  author      String
+  price       Float                      // ราคา (ทศนิยมได้)
+  stock       Int      @default(0)
+  description String   @default("")
+  cover       String?                    // "?" = ว่างได้ (null) เก็บ path รูป เช่น /uploads/xxx.jpg
+  createdAt   DateTime @default(now())   // เวลาที่สร้าง ใส่ให้เองอัตโนมัติ
+  updatedAt   DateTime @updatedAt        // เวลาที่แก้ล่าสุด Prisma อัปเดตให้เองทุกครั้งที่ update
+
+  // ----- ความสัมพันธ์ 1-N (Foreign Key) -----
+  catalogId   Int                        // คอลัมน์จริงที่เก็บ id ของ catalog (FK)
+  catalog     Catalog  @relation(fields: [catalogId], references: [id], onDelete: Restrict)
+  //                               ^ catalogId ของเรา   ^ ชี้ไป id ของ Catalog
+  //   onDelete: Restrict = ลบ catalog ที่ยังมีหนังสือไม่ได้ (DB กันให้อีกชั้น)
+
+  @@index([catalogId]) // ทำ index ให้ค้น/กรองตาม catalogId เร็วขึ้น (ไม่ใส่ก็ได้)
+}

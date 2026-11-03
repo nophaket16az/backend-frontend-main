@@ -2,6 +2,36 @@
 
 โปรเจกต์ฝึกสอบ Web Contemporary: Next.js (App Router) + Express + Multer
 
+## เลือก backend ไหนตอนสอบ (อ่านตรงนี้ก่อน)
+| สถานการณ์ในโจทย์ | ใช้ |
+|---|---|
+| ไม่พูดถึง DB เลย / ให้เก็บอะไรก็ได้ / ให้ swagger มาโดยไม่บอกเรื่อง DB | `backend/` (data.json) — เร็ว เสี่ยงน้อย |
+| บอกให้ใช้ SQLite/MySQL/Prisma หรือให้ schema/ER มา | `backend-prisma/` (ดู `backend-prisma/README.md`) |
+| อาจารย์ให้ backend มาแล้ว ขาดแค่ frontend JS | ไม่ต้องใช้ทั้งสองอัน ใช้ของที่อาจารย์ให้ แล้วดู `html-version/` เป็นแนวทาง |
+
+- API ของ `backend/` กับ `backend-prisma/` เหมือนกันทุก endpoint → `frontend/` และ `html-version/` ใช้ได้กับทั้งสอง
+- Prisma ติดตั้งช้ากว่า (`db push` ต้องโหลด engine จากเน็ต) ใช้เมื่อโจทย์บังคับเท่านั้น
+- `backend-prisma/` ยังไม่เคยรันทดสอบจริง ให้ลองรันให้ผ่านก่อนวันสอบ
+
+## วิธี clone โปรเจกต์มาใช้ (เครื่องใหม่ / ห้องสอบ)
+```bash
+# 1) clone ลงโฟลเดอร์ปัจจุบัน  (แก้ <user>/<repo> เป็นของตัวเอง)
+git clone https://github.com/<user>/<repo>.git
+
+# 2) clone แล้วตั้งชื่อ/ไปไว้โฟลเดอร์ที่ต้องการ (ท้ายคำสั่งคือ path ปลายทาง)
+git clone https://github.com/<user>/<repo>.git D:/exam/library-crud     # Windows
+git clone https://github.com/<user>/<repo>.git ~/exam/library-crud      # macOS/Linux
+
+# 3) เข้าโฟลเดอร์ แล้วติดตั้งเฉพาะส่วนที่จะใช้ (node_modules ไม่ได้อยู่ใน repo)
+cd library-crud/backend && npm install && npm start            # แบบ data.json
+# หรือ
+cd library-crud/backend-prisma && npm install && npx prisma db push && npm start   # แบบ Prisma
+```
+- ต้องมี Node.js และ git ติดตั้งในเครื่อง ตรวจด้วย `node -v` และ `git --version`
+- ถ้า repo เป็น private ต้อง login ก่อน (token หรือ GitHub CLI) — ที่ง่ายสุดคือตั้งเป็น public
+- ถ้าไม่มี git ให้กด Code → Download ZIP บนหน้า GitHub แล้วแตกไฟล์แทน
+- `backend-prisma/.env` อยู่ใน `.gitignore` ถ้า clone มาแล้วไม่มี ให้สร้างเองด้วยบรรทัด `DATABASE_URL="file:./dev.db"`
+
 ## วิธีรัน
 ```bash
 # Backend -> http://localhost:4000

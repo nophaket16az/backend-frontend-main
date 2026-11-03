@@ -38,6 +38,28 @@
       "description": "นวนิยายไทยคลาสสิก",
       "cover": null,
       "createdAt": "2026-11-03T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "T",
+      "author": "A",
+      "price": 10,
+      "stock": 0,
+      "catalogId": 1,
+      "description": "",
+      "cover": "/uploads/1793687842150-980304.png",
+      "createdAt": "2026-11-03T06:37:22.155Z"
+    },
+    {
+      "id": 4,
+      "title": "T",
+      "author": "A",
+      "price": 10,
+      "stock": 0,
+      "catalogId": 1,
+      "description": "",
+      "cover": "/uploads/1793687860911-31744.png",
+      "createdAt": "2026-11-03T06:37:40.915Z"
     }
   ]
 }
